@@ -546,5 +546,5 @@ eof = /<EOF>/ ;
 * **GPU/UEFI Specifics:** The `gpuDirective` and `uefiDirective` are placeholders. Their specific syntax and semantics would need to be defined based on the targeted GPU/UEFI environments.
 * **Error Handling:** The grammar doesn't explicitly address error handling or recovery during parsing.
 
-This improved grammar provides a more robust foundation for an advanced assembly language with a focus on performance and safety. It incorporates features necessary for achieving zero-overhead abstractions and enabling powerful compile-time metaprogramming.
+
 ```
