@@ -1,14 +1,13 @@
 
-```markdown
-## AsGex Assembly Language Documentation
+# AsGex Assembly Language Documentation
 
 This document provides a comprehensive overview of the syntax and semantics of the **AsGex** Assembly Language. **AsGex** is designed with a focus on **zero-overhead abstractions**, **memory-safe templates**, and **compile-time metaprogramming** capabilities, targeting a variety of architectures including X64, 32-bit, ARM, GPU, and UEFI/BIOS environments.
 
-**1. Introduction**
+## 1. Introduction
 
 **AsGex** aims to provide a powerful and expressive assembly-level language that transcends the limitations of traditional assembly. **Its core selling points are the ability to write low-level code with high-level abstractions that incur no runtime cost, and the power of compile-time metaprogramming for code generation and optimization.** It incorporates modern language concepts like namespaces, templates, concepts, and modules, allowing for more structured and maintainable code while retaining fine-grained control over hardware. The language emphasizes compile-time operations and incorporates features aimed at improving memory safety where possible. **AsGex's multi-architecture focus makes it suitable for a wide range of embedded, system-level, and high-performance computing tasks.**
 
-**2. Program Structure**
+## 2. Program Structure
 
 An **AsGex** program consists of a sequence of top-level elements, processed sequentially by the compiler.
 
@@ -25,7 +24,7 @@ proc main() {
 }
 ```
 
-**3. Namespaces**
+## 3. Namespaces
 
 Namespaces provide a mechanism for organizing **AsGex** code and preventing naming conflicts.
 
@@ -47,7 +46,7 @@ proc main() {
 }
 ```
 
-**4. Concepts**
+## 4. Concepts
 
 Concepts define requirements on template parameters, enabling more robust and type-safe generic programming in **AsGex**.
 
@@ -72,7 +71,7 @@ proc generic_add(a: T, b: T) -> T {
 }
 ```
 
-**5. Threads**
+## 5. Threads
 
 **AsGex** provides language-level support for threads, enabling concurrent programming.
 
@@ -94,7 +93,7 @@ proc main() {
 }
 ```
 
-**6. Procedures/Functions**
+## 6. Procedures/Functions
 
 Procedures (or functions) encapsulate reusable blocks of code in **AsGex**.
 
@@ -111,7 +110,7 @@ proc multiply(a: qword, b: qword) -> qword {
 }
 ```
 
-**7. Instructions**
+## 7. Instructions
 
 Instructions represent the fundamental operations executed by the processor in **AsGex**.
 
@@ -137,7 +136,7 @@ my_label:
     jz  end_block
 ```
 
-**8. ARM Support**
+## 8. ARM Support
 
 **AsGex** includes support for ARM architectures through a dedicated set of instructions, directives, and macros.
 
@@ -167,7 +166,7 @@ my_label:
 *   **`shiftType`:** The type of shift operation in ARM instructions (e.g., `lsl`, `lsr`, `asr`).
 *   **`shiftOperation`:** Specifies a shift operation with a shift type and an expression.
 
-**9. Directives**
+## 9. Directives
 
 Directives are instructions to the **AsGex** assembler/compiler, controlling aspects of the compilation process or data layout.
 
@@ -239,7 +238,7 @@ Directives are instructions to the **AsGex** assembler/compiler, controlling asp
 *   **`idtDirective`:** Defines the Interrupt Descriptor Table.
 *   **`linkerDirective`:** Provides instructions to the linker.
 
-**10. Macros**
+## 10. Macros
 
 Macros provide a mechanism for code generation through textual substitution in **AsGex**.
 
@@ -260,7 +259,7 @@ proc main() {
 }
 ```
 
-**11. Modules**
+## 11. Modules
 
 Modules provide a higher-level organization for code in **AsGex**.
 
@@ -278,7 +277,7 @@ Modules provide a higher-level organization for code in **AsGex**.
 }
 ```
 
-**12. Register Classes**
+## 12. Register Classes
 
 Register classes allow grouping related registers for easier management.
 
@@ -291,7 +290,7 @@ Register classes allow grouping related registers for easier management.
 %regclass general_purpose_registers = { rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp, r8, r9, r10, r11, r12, r13, r14, r15 };
 ```
 
-**13. Templates**
+## 13. Templates
 
 Templates enable generic programming in **AsGex**.
 
@@ -319,17 +318,17 @@ proc generic_add(a: T, b: T) -> T {
 }
 ```
 
-**14. Comments**
+## 14. Comments
 
 *   **`comment`:**  A single-line comment starting with `;`.
 *   **`commentChar`:** Any character allowed in a comment.
 *   **`lineEnd`:**  A newline character or the end-of-file marker.
 
-**15. Labels**
+## 15. Labels
 
 *   **`label`:** An identifier followed by a colon (e.g., `my_label:`).
 
-**16. Instruction Prefixes**
+## 16. Instruction Prefixes
 
 *   **`instructionPrefix`:** Prefixes that modify instruction behavior.
 *   **`x86RepeatPrefix`:**  Repeat prefixes (e.g., `rep`, `repe`, `repne`).
@@ -342,11 +341,11 @@ proc generic_add(a: T, b: T) -> T {
 *   **`armConditionCode`:** Conditional execution codes for ARM instructions (e.g., `eq`, `ne`, `cs`).
 *   **`armHintPrefix`:** Hint prefixes for ARM instructions (e.g., `wfi`, `sev`).
 
-**17. Shorthand Operations**
+## 17. Shorthand Operations
 
 *   **`shorthandOperator`:** Operators used in shorthand instructions (e.g., `+=`, `-=`, `*=`, `/=`, `&=`, `|=`, `^=`, `++`, `--`).
 
-**18. Thread Operations**
+## 18. Thread Operations
 
 *   **`threadCreation`:** Creates a new thread.
 *   **`expressionList`:** A comma-separated list of expressions.
@@ -357,7 +356,7 @@ proc generic_add(a: T, b: T) -> T {
 *   **`threadYieldDirective`:** Yields the processor to another thread.
 *   **`threadLocalDirective`:**  Declares thread-local data.
 
-**19. Operands**
+## 19. Operands
 
 *   **`operandList`:** A comma-separated list of operands.
 *   **`operand`:** A single operand for an instruction.
@@ -378,20 +377,20 @@ proc generic_add(a: T, b: T) -> T {
 *   **`gpuOperandSizeOverride`:** Size overrides for GPU operands.
 *   **`gpuOperandKind`:** Kinds of operands in GPU instructions.
 
-**20. Modifiable Operands**
+## 20. Modifiable Operands
 
 *   **`modifiableOperand`:** An operand that can be modified (used in shorthand instructions).
 *   **`x86ModifiableOperand`:** A modifiable operand in x86 instructions.
 *   **`armModifiableOperand`:** A modifiable operand in ARM instructions.
 *   **`gpuModifiableOperand`:** A modifiable operand in GPU instructions.
 
-**21. Operand Kinds**
+## 21. Operand Kinds
 
 *   **`immediate`:** A constant value.
 *   **`registerOperand`:** A register.
 *   **`memoryOperand`:** A memory address.
 
-**22. Registers**
+## 22. Registers
 
 *   **`register`:**  A processor register. This can be a general-purpose register, a segment register, a control register, a debug register, or an architecture-specific register (e.g., MMX, XMM, YMM, ZMM for x86, or registers specific to ARM or GPU).
 *   **`generalRegister`:** General-purpose registers (e.g., `rax`, `rbx`, `rcx`, `rdx` in x86).
@@ -405,7 +404,7 @@ proc generic_add(a: T, b: T) -> T {
 *   **`armRegister`:** Registers specific to the ARM architecture (e.g., `r0` through `r15`, `sp`, `lr`, `pc`, and others like `apsr`, `cpsr`, `spsr`).
 *   **`gpuRegister`:** Registers specific to GPU architectures.
 
-**23. Constants**
+## 23. Constants
 
 *   **`constant`:** A constant value (e.g., a number, a character, a string, an address literal).
 *   **`number`:** A decimal number.
@@ -417,7 +416,7 @@ proc generic_add(a: T, b: T) -> T {
 *   **`characterChar`:** A character within a character literal or string.
 *   **`addressLiteral`:** An address specified as a hexadecimal number (e.g., `$0x1000`).
 
-**24. Expressions**
+## 24. Expressions
 
 *   **`expression`:** An expression that can be evaluated at compile time or runtime.
 *   **`conditionalExpression`:** A conditional expression using the ternary operator (`? :`).
@@ -434,7 +433,7 @@ proc generic_add(a: T, b: T) -> T {
 *   **`sizeOfExpression`:**  The `sizeof` operator.
 *   **`alignOfExpression`:** The `alignof` operator.
 
-**25. Memory Addresses**
+## 25. Memory Addresses
 
 *   **`memoryAddress`:** Specifies a memory address using square brackets `[]`.
 *   **`addressBase`:** The base register or symbol for the address.
@@ -455,12 +454,12 @@ proc generic_add(a: T, b: T) -> T {
 *   **`armAddressScaleIndex`:** Specifies an offset in an ARM memory address that includes an `armRegister` and a `shiftOperation`.
 *   **`armShiftedRegister`:** Specifies a shifted register operand in ARM instructions, including an `armRegister`, a `shiftType`, and an `expression`.
 
-**26. String Literals**
+## 26. String Literals
 
 *   **`stringLiteral`:** A sequence of characters enclosed in double quotes (e.g., `"Hello, world!"`).
 *   **`stringChar`:** A character within a string literal.
 
-**27. Lexical Tokens**
+## 27. Lexical Tokens
 
 *   **`identifier`:** A name for a variable, label, function, etc.
 *   **`digit`:** A decimal digit (0-9).
