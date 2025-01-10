@@ -1,6 +1,4 @@
 
-Okay, the language will now be referred to as **AsGex**. I will update the documentation to reflect this change.
-
 ## Documentation for the AsGex Assembly Language
 
 This document provides a comprehensive overview of the syntax and semantics of the **AsGex** Assembly Language, as defined by the provided Enhanced Backus-Naur Form (EBNF) grammar. **AsGex** is designed with a focus on **zero-overhead abstractions**, **memory-safe templates**, and **compile-time metaprogramming** capabilities, targeting a variety of architectures including X64, 32-bit, GPU, and UEFI/BIOS environments.
