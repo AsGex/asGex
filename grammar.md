@@ -1,7 +1,12 @@
 
 ```markdown
-```
-(* Program Structure *)
+# Assembly Language Grammar
+
+This document defines the grammar of an assembly language, covering program structure, instructions, directives, and expressions.
+
+## Program Structure
+
+```ebnf
 program = { topLevelElement }, eof ;
 
 topLevelElement = instruction [ comment ] lineEnd
@@ -17,34 +22,52 @@ topLevelElement = instruction [ comment ] lineEnd
 | namespaceDefinition
 | conceptDefinition
 | procedureDefinition ;
+```
 
-(* Namespaces *)
+## Namespaces
+
+```ebnf
 namespaceDefinition = "namespace", identifier, "{", { topLevelElement }, "}" ;
+```
 
-(* Concepts *)
+## Concepts
+
+```ebnf
 conceptDefinition = "concept", identifier, [ "<", templateParameterList, ">" ], [ whereClause ], "{", { conceptRequirement }, "}" ;
 conceptRequirement = typeRequirement
 | expressionRequirement ;
 typeRequirement = "typename", identifier, ":", templateParameter ;
 expressionRequirement = "requires", expression, ";" ;
 whereClause = "where", expression ;
+```
 
-(* Threads *)
+## Threads
+
+```ebnf
 threadDefinition = "thread", identifier, [ "<", templateArgumentList, ">" ], [ "(", parameterList, ")" ], [ ":", typeReference ], "{", { topLevelElement }, "}" ;
 parameterList = parameter, { ",", parameter } ;
 parameter = identifier, ":", typeReference ;
+```
 
-(* Procedures/Functions *)
+## Procedures/Functions
+
+```ebnf
 procedureDefinition = "proc", identifier, [ "(", parameterList, ")" ], [ "->", typeReference ], [ "callingconvention", identifier ], "{", { topLevelElement }, "}" ;
+```
 
-(* Instructions *)
+## Instructions
+
+```ebnf
 instruction = [ label, ":" ], [ instructionPrefix ], architectureSpecificInstructionBody ;
 
 architectureSpecificInstructionBody = x86InstructionBody  (* @arch: x64, x86-32 *)
 | armInstructionBody  (* @arch: arm *)
 | gpuInstructionBody  (* @arch: gpu *) ;
+```
 
-(* X86 Instructions *)
+### X86 Instructions
+
+```ebnf
 x86InstructionBody = [ x86InstructionPrefix ], x86Mnemonic, [ x86OperandList ]
 | x86ShorthandInstruction ;
 x86ShorthandInstruction = x86ModifiableOperand, shorthandOperator, expression ;
@@ -127,8 +150,11 @@ x86Register = generalRegister
 | xmmRegister
 | ymmRegister
 | zmmRegister ;
+```
 
-(* ARM Instructions *)
+### ARM Instructions
+
+```ebnf
 armInstruction = [ label, ":" ], [ armInstructionPrefix ], armInstructionBody ; (* @arch: arm *)
 armInstructionBody = armMnemonic, [ armOperandList ]
 | armShorthandInstruction ;
@@ -185,8 +211,11 @@ armAddressScaleIndex = armRegister, ",", shiftOperation ;
 armShiftedRegister = armRegister, ",", shiftType, expression ;
 shiftType = "lsl" | "lsr" | "asr" | "ror" | "rrx" ;
 shiftOperation = shiftType, " ", expression ;
+```
 
-(* GPU Instructions *)
+### GPU Instructions
+
+```ebnf
 gpuInstruction = [ label, ":" ], [ gpuInstructionPrefix ], gpuInstructionBody ; (* @arch: gpu *)
 gpuInstructionBody = gpuMnemonic, [ gpuOperandList ]
 | gpuShorthandInstruction ;
@@ -232,8 +261,11 @@ gpuMemoryOperand = "[", gpuAddress, "]" ;
 gpuAddress = [ gpuAddressSpace ], gpuAddressExpression ;
 gpuAddressSpace = "global" | "shared" | "local" | "const" ; (* Example address spaces *)
 gpuAddressExpression = gpuRegister | ( gpuRegister, "+", immediate ) | ( gpuRegister, "+", gpuRegister ) | symbolReference | expression ;
+```
 
-(* Directives *)
+## Directives
+
+```ebnf
 directive = ".", directiveName, [ directiveArgumentList ] ;
 directiveName = dataDirective
 | equateDirective
@@ -299,8 +331,10 @@ directiveName = dataDirective
 | gdtDirective
 | idtDirective
 | linkerDirective ;
+```
+### ARM Directives
 
-(* ARM Directives *)
+```ebnf
 armDirective = ".", armDirectiveName, [ armDirectiveArgumentList ] ; (* @arch: arm *)
 armDirectiveName = "syntax"
 | "arch"
@@ -313,23 +347,36 @@ armDirectiveName = "syntax"
 | "size"
 ;
 armDirectiveArgumentList = directiveArgument, { ",", directiveArgument } ;
+```
 
-(* Macros *)
+## Macros
+
+```ebnf
 macroDefinition = "#macro", identifier, [ "(", parameterList, ")" ], "{", { topLevelElement }, "}" ;
+```
+### ARM Macros
 
-(* ARM Macros *)
+```ebnf
 armMacroDefinition = "#arm_macro", identifier, [ "(", armParameterList, ")" ], "{", { topLevelElement }, "}" ;
 armParameterList = armParameter, { ",", armParameter } ;
 armParameter = identifier ;
+```
+## Modules
 
-(* Modules *)
+```ebnf
 moduleDefinition = "%module", identifier, "{", { topLevelElement }, "}" ;
+```
 
-(* Register Classes *)
+## Register Classes
+
+```ebnf
 registerClassDefinition = "%regclass", identifier, "=", "{", registerList, "}" ;
 registerList = register, { ",", register } ;
+```
 
-(* Templates *)
+## Templates
+
+```ebnf
 templateDefinition = "template", [ "<", templateParameterList, ">" ], identifier, [ "(", parameterList, ")" ], [ "->", typeReference ], [ requiresClause ], [ "{", attributeList, "}" ], "{", { templateElement }, "}" ;
 templateParameterList = templateParameter, { ",", templateParameter } ;
 templateParameter = ( "typename", identifier, [ "requires", conceptReference ] )
@@ -348,19 +395,31 @@ templateCall = [ namespaceQualifier ], identifier, "<", [ templateArgumentList ]
 templateArgumentList = templateArgument, { ",", templateArgument } ;
 templateArgument = typeReference
 | constExpression ;
+```
 
-(* Comments *)
+## Comments
+
+```ebnf
 comment = ";", { commentChar } ;
 commentChar = /./ ;
 lineEnd = "\n" | eof ;
+```
 
-(* Labels *)
+## Labels
+
+```ebnf
 label = identifier ;
+```
 
-(* Shorthand Operations *)
+## Shorthand Operations
+
+```ebnf
 shorthandOperator = "=" | "+=" | "-=" | "=" | "/=" | "&=" | "|=" | "^=" | "++" | "--" ;
+```
 
-(* Thread Operations *)
+## Thread Operations
+
+```ebnf
 threadCreation = "thread", [ identifier, "=" ], templateCall, [ "(", [ expressionList ] , ")" ] ;
 expressionList = expression, { ",", expression } ;
 threadDirective = threadJoinDirective
@@ -372,8 +431,11 @@ threadTerminateDirective = "threadterminate" ;
 threadSleepDirective = "threadsleep", constExpression ;
 threadYieldDirective = "threadyield" ;
 threadLocalDirective = "threadlocal", identifier, ":", typeReference, [ "=", constExpression ] ;
+```
 
-(* Operands *)
+## Operands
+
+```ebnf
 operand = [ operandSizeOverride ], [ operandType ], operandKind ;
 
 (* ARM Operands are defined above *)
@@ -386,13 +448,19 @@ modifiableOperand = [ operandSizeOverride ], [ operandType ], ( registerOperand 
 armModifiableOperand = [ armOperandSizeOverride ], armRegister ;
 gpuModifiableOperand = [ gpuOperandSizeOverride ], gpuRegister ;
 x86ModifiableOperand = [ x86OperandSizeOverride ], [ x86OperandType ], ( x86RegisterOperand | x86MemoryOperand ) ;
+```
 
-(* Operand Kinds *)
+### Operand Kinds
+
+```ebnf
 immediate = constant ;
 registerOperand = register ;
 memoryOperand = memoryAddress ;
+```
 
-(* Registers *)
+### Registers
+
+```ebnf
 register = generalRegister
 | segmentRegister
 | controlRegister
@@ -412,8 +480,11 @@ mmxRegister = "mm", digit ;
 xmmRegister = "xmm", ( digit | ( "1", digit) | ( "2", digit) | ( "3", ( "0" | "1" )) ) ;
 ymmRegister = "ymm", ( digit | ( "1", digit) | ( "2", digit) | ( "3", ( "0" | "1" )) ) ;
 zmmRegister = "zmm", ( digit | ( "1", digit) | ( "2", digit) | ( "3", ( "0" | "1" )) ) ;
+```
 
-(* Constants *)
+## Constants
+
+```ebnf
 constant = [ "-" ], ( number | hexNumber | binNumber | floatNumber | character | addressLiteral ) ;
 number = digit, { digit } ;
 hexNumber = ( "0x" | "0X" ), hexDigit, { hexDigit } ;
@@ -423,8 +494,11 @@ character = "'", ( escapeSequence | characterChar ), "'" ;
 escapeSequence = "", ( "n" | "r" | "t" | """ | "'" | "`" | "x", hexDigit, hexDigit ) ;
 characterChar = /[^'\\\n]/ ;
 addressLiteral = "$", hexNumber ;
+```
 
-(* Expressions *)
+## Expressions
+
+```ebnf
 expression = conditionalExpression ;
 conditionalExpression = logicalOrExpression, [ "?", expression, ":", expression ] ;
 logicalOrExpression = logicalAndExpression, { "||", logicalAndExpression } ;
@@ -446,8 +520,11 @@ unaryExpression = ( "(", expression, ")" )
 typeConversion = "byte" | "word" | "dword" | "qword" | "tbyte" | "float" | "double" | "signed" | "unsigned" ;
 sizeOfExpression = "sizeof", "(", typeReference | expression, ")" ;
 alignOfExpression = "alignof", "(", typeReference, ")" ;
+```
 
-(* Memory Addresses *)
+## Memory Addresses
+
+```ebnf
 memoryAddress = "[", [ segmentPrefix, ":" ], addressBase, [ addressOffset ], "]" ;
 addressBase = registerOperand
 | symbolReference
@@ -459,12 +536,18 @@ addressScaleIndex = "+", registerOperand, "", scaleFactor ;
 addressTerm = constant
 | registerOperand ;
 scaleFactor = "1" | "2" | "4" | "8" ;
+```
 
-(* String Literals *)
+## String Literals
+
+```ebnf
 stringLiteral = """", { stringChar | escapeSequence }, """" ;
 stringChar = /[^"\\\n]/ ;
+```
 
-(* Lexical Tokens *)
+## Lexical Tokens
+
+```ebnf
 identifier = /[_a-zA-Z][_a-zA-Z0-9]*/ ;
 digit = /[0-9]/ ;
 hexDigit = /[0-9a-fA-F]/ ;
