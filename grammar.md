@@ -1,7 +1,10 @@
-```markdown
-(* Enhanced EBNF Grammar for Advanced Assembly Language (AsGex) - X64, 32-bit, ARM, GPU, UEFI/BIOS *)
-(* Focus: Zero-Overhead, Memory-Safe Templates, and Compile-Time Metaprogramming *)
 
+```markdown
+## Enhanced EBNF Grammar for Advanced Assembly Language (AsGex)
+
+This grammar defines the syntax for the Advanced Assembly Language (AsGex), targeting X64, 32-bit, ARM, GPU, and UEFI/BIOS architectures. It emphasizes zero-overhead, memory-safe templates, and compile-time metaprogramming.
+
+```ebnf
 (* Program Structure *)
 program = { topLevelElement }, eof ;
 
@@ -41,10 +44,10 @@ procedureDefinition = "proc", identifier, [ "(", parameterList, ")" ], [ "->", t
 (* Instructions *)
 instruction = [ label, ":" ], [ instructionPrefix ], instructionBody ;
 instructionBody = mnemonic, [ operandList ]
-                | shorthandInstruction ;
+                  | shorthandInstruction ;
 shorthandInstruction = modifiableOperand, shorthandOperator, expression ;
 mnemonic = [ namespaceQualifier ], instructionMnemonic
-         | templateCall ;
+           | templateCall ;
 namespaceQualifier = identifier, "::" ;
 instructionMnemonic = "mov"
                     | "add"
@@ -207,7 +210,7 @@ directiveArgumentList = directiveArgument, { ",", directiveArgument } ;
 dataDirective = ( "db" | "dw" | "dd" | "dq" | "dt" | "resb" | "resw" | "resd" | "resq" | "rest" | "string" ), dataList ;
 dataList = dataValue, { ",", dataValue } ;
 dataValue = stringLiteral
-            | expression ;
+          | expression ;
 
 (* Type Directives *)
 typeDirective = "type", identifier, "as", typeDefinition ;
@@ -327,7 +330,7 @@ templateParameter = ( "typename", identifier, [ "requires", conceptReference ] )
 requiresClause = "requires", conceptConjunction ;
 conceptConjunction = conceptDisjunction, { "&&", conceptDisjunction } ;
 conceptDisjunction = conceptReference, { "||", conceptReference } ;
-conceptReference = [ namespaceQualifier ], identifier, [ "<", [templateArgumentList] ,">'] ;
+conceptReference = [ namespaceQualifier ], identifier, [ "<", [templateArgumentList] ,">" ] ;
 templateElement = topLevelElement
                 | unsafeBlock
                 | staticBlock ;
@@ -440,7 +443,7 @@ hexNumber = ( "0x" | "0X" ), hexDigit, { hexDigit } ;
 binNumber = ( "0b" | "0B" ), binDigit, { binDigit } ;
 floatNumber = digit, { digit }, ".", { digit }, [ ( "e" | "E" ), [ "+" | "-" ], digit, { digit } ] ;
 character = "'", ( escapeSequence | characterChar ), "'" ;
-escapeSequence = "\", ( "n" | "r" | "t" | "\"" | "'" | "`" | "x", hexDigit, hexDigit ) ;
+escapeSequence = "\\", ( "n" | "r" | "t" | "\"" | "'" | "`" | "x", hexDigit, hexDigit ) ;
 characterChar = /[^'\\\n]/ ;
 addressLiteral = "$", hexNumber ;
 
@@ -458,7 +461,7 @@ multiplicativeExpression = unaryExpression, { ( "*", "/", "%" ), unaryExpression
 unaryExpression = ( "(", expression, ")" )
                 | symbolReference
                 | constant
-                | ( "~", "!" ), unaryExpression
+                | ( "~" | "!" ), unaryExpression
                 | typeConversion, unaryExpression
                 | sizeOfExpression
                 | alignOfExpression
@@ -474,14 +477,14 @@ addressBase = registerOperand
             | ( "rel", symbolReference ) ;
 addressOffset = addressDisplacement
               | addressScaleIndex ;
-addressDisplacement = [ "+", "-" ], addressTerm, { [ "+", "-" ], addressTerm } ;
+addressDisplacement = [ "+" | "-" ], addressTerm, { [ "+" | "-" ], addressTerm } ;
 addressScaleIndex = "+", registerOperand, "*", scaleFactor ;
 addressTerm = constant
             | registerOperand ;
 scaleFactor = "1" | "2" | "4" | "8" ;
 
 (* String Literals *)
-stringLiteral = "\"", { stringChar | escapeSequence }, "\"" ;
+stringLiteral = """", { stringChar | escapeSequence }, """" ;
 stringChar = /[^"\\\n]/ ;
 
 (* Lexical Tokens *)
@@ -490,5 +493,5 @@ digit = /[0-9]/ ;
 hexDigit = /[0-9a-fA-F]/ ;
 binDigit = /[01]/ ;
 eof = /<EOF>/ ;
-
 ```
+
