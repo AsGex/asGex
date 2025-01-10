@@ -1,3 +1,5 @@
+
+```markdown
 ## AsGex Assembly Language Documentation
 
 This document provides a comprehensive overview of the syntax and semantics of the **AsGex** Assembly Language. **AsGex** is designed with a focus on **zero-overhead abstractions**, **memory-safe templates**, and **compile-time metaprogramming** capabilities, targeting a variety of architectures including X64, 32-bit, ARM, GPU, and UEFI/BIOS environments.
@@ -59,12 +61,12 @@ Concepts define requirements on template parameters, enabling more robust and ty
 
 ```asgex
 concept Addable<T> where T is Numeric {
-    typename Result : T; 
-    requires T + T;    
+    typename Result : T;
+    requires T + T;
 }
 
 template <typename T>
-requires Addable<T> 
+requires Addable<T>
 proc generic_add(a: T, b: T) -> T {
     ; ...
 }
@@ -97,7 +99,7 @@ proc main() {
 Procedures (or functions) encapsulate reusable blocks of code in **AsGex**.
 
 *   **`procedureDefinition`:** Defines a procedure using the `proc` keyword.
-*   **`callingConventionSpecifier`:** Specifies the calling convention for the procedure (e.g., `cdecl`, `stdcall`, `fastcall`).
+*   **`callingConventionDirective`:** Specifies the calling convention for the procedure (e.g., `cdecl`, `stdcall`, `fastcall`).
 
 **Example:**
 
@@ -116,7 +118,10 @@ Instructions represent the fundamental operations executed by the processor in *
 *   **`instruction`:** Represents a single assembly instruction.
 *   **`label`:** An optional label to mark the instruction's location.
 *   **`instructionPrefix`:** Optional prefixes that modify the instruction's behavior (e.g., `rep`, segment overrides).
-*   **`instructionBody`:** The core of the instruction: either a `mnemonic` with operands or a `shorthandInstruction`.
+*   **`architectureSpecificInstructionBody`:** The core of the instruction, which varies depending on the target architecture (x86, ARM, GPU).
+*   **`x86InstructionBody`:** Instruction body specific to x86 architectures.
+*   **`armInstructionBody`:** Instruction body specific to ARM architectures.
+*   **`gpuInstructionBody`:** Instruction body specific to GPU architectures.
 *   **`shorthandInstruction`:** A simplified syntax for common operations (e.g., `rax += 5`).
 *   **`mnemonic`:** The instruction's name (e.g., `mov`, `add`, `jmp`).
 *   **`namespaceQualifier`:**  Used to specify the namespace of an instruction (if needed).
@@ -127,14 +132,14 @@ Instructions represent the fundamental operations executed by the processor in *
 
 ```asgex
 my_label:
-    mov rax, 0x10 
-    add rax, rbx  
-    jz  end_block 
+    mov rax, 0x10
+    add rax, rbx
+    jz  end_block
 ```
 
-**8. ARM Support (Optional)**
+**8. ARM Support**
 
-**AsGex** includes optional support for ARM architectures through a dedicated set of instructions, directives, and macros.
+**AsGex** includes support for ARM architectures through a dedicated set of instructions, directives, and macros.
 
 *   **`armInstruction`:** Represents an ARM instruction.
 *   **`armInstructionPrefix`:**  Optional prefixes for ARM instructions.
@@ -144,8 +149,8 @@ my_label:
 *   **`armInstructionMnemonic`:** The basic ARM instruction mnemonics.
 *   **`armDirective`:** Directives specific to ARM.
 *   **`armDirectiveName`:** Names of ARM-specific directives.
-*   **`armDirectiveArguments`:** Arguments for ARM directives.
-*   **`armMacroDefinition`:** Defines an ARM-specific macro.
+*   **`armDirectiveArgumentList`:** Arguments for ARM directives.
+*   **`armMacroDefinition`:** Defines an ARM-specific macro using `#arm_macro`.
 *   **`armParameterList`:**  A list of parameters for an ARM macro.
 *   **`armParameter`:** A single parameter declaration for an ARM macro.
 *   **`armOperandList`:** A list of operands for ARM instructions.
@@ -159,6 +164,8 @@ my_label:
 *   **`armAddressOffset`:** The offset from the base register.
 *   **`armAddressDisplacement`:**  An offset using a constant or register.
 *   **`armAddressScaleIndex`:** An offset using a scaled register (e.g., `r1*4`).
+*   **`shiftType`:** The type of shift operation in ARM instructions (e.g., `lsl`, `lsr`, `asr`).
+*   **`shiftOperation`:** Specifies a shift operation with a shift type and an expression.
 
 **9. Directives**
 
@@ -166,7 +173,7 @@ Directives are instructions to the **AsGex** assembler/compiler, controlling asp
 
 *   **`directive`:** Represents an assembler directive.
 *   **`directiveName`:** The name of the directive (see the list below).
-*   **`directiveArguments`:** Arguments for the directive.
+*   **`directiveArgumentList`:** Arguments for the directive.
 *   **`dataDirective`:** Directives for defining data (e.g., `db`, `dw`, `dd`, `dq`, `string`).
 *   **`equateDirective`:** Assigns a symbolic name to an expression (e.g., `.equ`).
 *   **`constDirective`:** Declares a compile-time constant.
@@ -181,7 +188,14 @@ Directives are instructions to the **AsGex** assembler/compiler, controlling asp
 *   **`externDirective`:** Declares symbols that are defined externally.
 *   **`alignDirective`:** Aligns code or data to a specific memory boundary.
 *   **`sectionDirective`:**  Switches to a specific linker section.
-*   **`ifDirective`:**  Conditional compilation directives (`if`, `elif`, `else`, `endif`).
+*   **`ifDirective`:**  Conditional compilation directive (`if`).
+*   **`elifDirective`:** Conditional compilation directive (`elif`).
+*   **`elseDirective`:** Conditional compilation directive (`else`).
+*   **`endifDirective`:** Conditional compilation directive (`endif`).
+*   **`ifdefDirective`:** Conditional compilation based on identifier definition (`ifdef`).
+*   **`ifndefDirective`:** Conditional compilation based on identifier not being defined (`ifndef`).
+*   **`elifdefDirective`:** `else if` for `ifdef` (`elifdef`).
+*   **`elifndefDirective`:** `else if` for `ifndef` (`elifndef`).
 *   **`entryPointDirective`:**  Specifies the program's entry point.
 *   **`callingConventionDirective`:** Sets the default calling convention.
 *   **`acpiDirective`:** Defines ACPI-related data structures.
@@ -208,10 +222,6 @@ Directives are instructions to the **AsGex** assembler/compiler, controlling asp
 *   **`evalDirective`:** Evaluates an expression at compile time.
 *   **`repDirective`:** Repeats an instruction or data definition (similar to `times`).
 *   **`defaultDirective`:** Sets a default value.
-*   **`ifdefDirective`:** Conditional compilation based on identifier definition.
-*   **`ifndefDirective`:** Conditional compilation based on identifier not being defined.
-*   **`elifdefDirective`:** `else if` for `ifdef`.
-*   **`elifndefDirective`:** `else if` for `ifndef`.
 *   **`exportDirective`:** Makes a symbol visible outside the current module.
 *   **`commonDirective`:** Declares a common symbol.
 *   **`fileDirective`:** Specifies the source file name (for debugging).
@@ -234,6 +244,7 @@ Directives are instructions to the **AsGex** assembler/compiler, controlling asp
 Macros provide a mechanism for code generation through textual substitution in **AsGex**.
 
 *   **`macroDefinition`:** Defines a macro using the `#macro` keyword.
+*   **`armMacroDefinition`:** Defines an ARM-specific macro using the `#arm_macro` keyword.
 
 **Example:**
 
@@ -304,7 +315,7 @@ Templates enable generic programming in **AsGex**.
 template <typename T>
 requires Addable<T>
 proc generic_add(a: T, b: T) -> T {
-    ; ... 
+    ; ...
 }
 ```
 
@@ -321,12 +332,15 @@ proc generic_add(a: T, b: T) -> T {
 **16. Instruction Prefixes**
 
 *   **`instructionPrefix`:** Prefixes that modify instruction behavior.
-*   **`repeatPrefix`:**  Repeat prefixes (e.g., `rep`, `repe`, `repne`).
-*   **`segmentPrefix`:** Segment override prefixes (e.g., `cs`, `ds`, `es`).
-*   **`addressPrefix`:** Address size override prefixes (e.g., `addr16`, `addr32`).
-*   **`dataPrefix`:** Data size override prefixes (e.g., `byte`, `word`, `dword`).
-*   **`vectorPrefix`:** Vector instruction prefixes (e.g., `xmmword`, `ymmword`).
-*   **`otherPrefix`:** Other prefixes (e.g., `bnd`, `notrack`).
+*   **`x86RepeatPrefix`:**  Repeat prefixes (e.g., `rep`, `repe`, `repne`).
+*   **`x86SegmentPrefix`:** Segment override prefixes (e.g., `cs`, `ds`, `es`).
+*   **`x86AddressPrefix`:** Address size override prefixes (e.g., `addr16`, `addr32`).
+*   **`x86DataPrefix`:** Data size override prefixes (e.g., `byte`, `word`, `dword`).
+*   **`x86VectorPrefix`:** Vector instruction prefixes (e.g., `xmmword`, `ymmword`).
+*   **`x86OtherPrefix`:** Other x86 specific prefixes (e.g., `bnd`, `notrack`).
+*   **`armInstructionPrefix`:** Prefixes specific to ARM instructions.
+*   **`armConditionCode`:** Conditional execution codes for ARM instructions (e.g., `eq`, `ne`, `cs`).
+*   **`armHintPrefix`:** Hint prefixes for ARM instructions (e.g., `wfi`, `sev`).
 
 **17. Shorthand Operations**
 
@@ -350,10 +364,26 @@ proc generic_add(a: T, b: T) -> T {
 *   **`operandSizeOverride`:** Specifies the size of an operand.
 *   **`operandType`:** Specifies the type of an operand.
 *   **`operandKind`:** The kind of an operand (e.g., `immediate`, `registerOperand`, `memoryOperand`).
+*   **`x86OperandList`:** A list of operands specifically for x86 instructions.
+*   **`x86Operand`:** A single operand for x86 instructions.
+*   **`x86OperandSizeOverride`:** Size overrides for x86 operands.
+*   **`x86OperandType`:** Type specifications for x86 operands.
+*   **`x86OperandKind`:** Kinds of operands in x86 instructions (e.g., `immediate`, `x86Register`, `x86MemoryOperand`).
+*   **`armOperandList`:** A list of operands specifically for ARM instructions.
+*   **`armOperand`:** A single operand for ARM instructions.
+*   **`armOperandSizeOverride`:** Size overrides for ARM operands.
+*   **`armOperandKind`:** Kinds of operands in ARM instructions (e.g., `immediate`, `armRegister`, `armMemoryOperand`).
+*   **`gpuOperandList`:** A list of operands specifically for GPU instructions.
+*   **`gpuOperand`:** A single operand for GPU instructions.
+*   **`gpuOperandSizeOverride`:** Size overrides for GPU operands.
+*   **`gpuOperandKind`:** Kinds of operands in GPU instructions.
 
 **20. Modifiable Operands**
 
 *   **`modifiableOperand`:** An operand that can be modified (used in shorthand instructions).
+*   **`x86ModifiableOperand`:** A modifiable operand in x86 instructions.
+*   **`armModifiableOperand`:** A modifiable operand in ARM instructions.
+*   **`gpuModifiableOperand`:** A modifiable operand in GPU instructions.
 
 **21. Operand Kinds**
 
@@ -363,15 +393,17 @@ proc generic_add(a: T, b: T) -> T {
 
 **22. Registers**
 
-*   **`register`:** A general-purpose, segment, control, debug, MMX, XMM, YMM, or ZMM register.
-*   **`generalRegister`:** General-purpose registers (e.g., `rax`, `rbx`, `rcx`, `rdx`).
-*   **`segmentRegister`:** Segment registers (e.g., `cs`, `ds`, `es`).
-*   **`controlRegister`:** Control registers (e.g., `cr0`, `cr2`, `cr3`).
-*   **`debugRegister`:** Debug registers (e.g., `dr0`, `dr1`, `dr2`).
-*   **`mmxRegister`:** MMX registers (e.g., `mm0`, `mm1`).
-*   **`xmmRegister`:** XMM registers (e.g., `xmm0`, `xmm1`).
-*   **`ymmRegister`:** YMM registers (e.g., `ymm0`, `ymm1`).
-*   **`zmmRegister`:** ZMM registers (e.g., `zmm0`, `zmm1`).
+*   **`register`:**  A processor register. This can be a general-purpose register, a segment register, a control register, a debug register, or an architecture-specific register (e.g., MMX, XMM, YMM, ZMM for x86, or registers specific to ARM or GPU).
+*   **`generalRegister`:** General-purpose registers (e.g., `rax`, `rbx`, `rcx`, `rdx` in x86).
+*   **`segmentRegister`:** Segment registers (e.g., `cs`, `ds`, `es` in x86).
+*   **`controlRegister`:** Control registers (e.g., `cr0`, `cr2`, `cr3` in x86).
+*   **`debugRegister`:** Debug registers (e.g., `dr0`, `dr1`, `dr2` in x86).
+*   **`mmxRegister`:** MMX registers (e.g., `mm0`, `mm1` in x86).
+*   **`xmmRegister`:** XMM registers (e.g., `xmm0`, `xmm1` in x86).
+*   **`ymmRegister`:** YMM registers (e.g., `ymm0`, `ymm1` in x86).
+*   **`zmmRegister`:** ZMM registers (e.g., `zmm0`, `zmm1` in x86).
+*   **`armRegister`:** Registers specific to the ARM architecture (e.g., `r0` through `r15`, `sp`, `lr`, `pc`, and others like `apsr`, `cpsr`, `spsr`).
+*   **`gpuRegister`:** Registers specific to GPU architectures.
 
 **23. Constants**
 
@@ -411,6 +443,17 @@ proc generic_add(a: T, b: T) -> T {
 *   **`addressScaleIndex`:** An offset using a scaled register (e.g., `[ebx + ecx*4]`).
 *   **`addressTerm`:** A component of an address offset (either a constant or a register).
 *   **`scaleFactor`:** The scaling factor (1, 2, 4, or 8) for an index register.
+*   **`x86AddressBase`:** The base for an x86 memory address, which can be an `x86RegisterOperand`, a `symbolReference`, or a relative reference (`rel` combined with a `symbolReference`).
+*   **`x86AddressOffset`:** The offset in an x86 memory address, specified as an `x86AddressDisplacement` or an `x86AddressScaleIndex`.
+*   **`x86AddressDisplacement`:** Specifies an offset in an x86 memory address using a combination of constants and `x86RegisterOperands`.
+*   **`x86AddressScaleIndex`:** Specifies an offset in an x86 memory address that includes a scaled `x86RegisterOperand`.
+*   **`x86AddressTerm`:** A component of an `x86AddressDisplacement`, which can be a `constant` or an `x86RegisterOperand`.
+*   **`x86ScaleFactor`:** The scaling factor for an x86 address index, with possible values of "1", "2", "4", or "8".
+*   **`armAddressBase`:** The base for an ARM memory address, which can be an `armRegister`, a `symbolReference`, or a relative reference (`rel` combined with a `symbolReference`).
+*   **`armAddressOffset`:** The offset in an ARM memory address, specified as an `armAddressDisplacement`, an `armAddressScaleIndex`, or an `armShiftedRegister`.
+*   **`armAddressDisplacement`:** Specifies an offset in an ARM memory address using a combination of constants and `addressTerms`.
+*   **`armAddressScaleIndex`:** Specifies an offset in an ARM memory address that includes an `armRegister` and a `shiftOperation`.
+*   **`armShiftedRegister`:** Specifies a shifted register operand in ARM instructions, including an `armRegister`, a `shiftType`, and an `expression`.
 
 **26. String Literals**
 
@@ -424,7 +467,4 @@ proc generic_add(a: T, b: T) -> T {
 *   **`hexDigit`:** A hexadecimal digit (0-9, A-F).
 *   **`binDigit`:** A binary digit (0 or 1).
 *   **`eof`:** The end-of-file marker.
-
-
-
- 
+```
